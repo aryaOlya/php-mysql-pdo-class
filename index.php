@@ -35,12 +35,7 @@ class usePdo{
         try {
             $statement = $this->conn->prepare("select * from ".$tableName);
             $statement->execute();
-            $assoc = $statement->fetch(PDO::FETCH_ASSOC);
-            $tableInfo = '';
-            foreach ($assoc as $key => $value){
-                $tableInfo =$key."=>".$value." | ".$tableInfo."<br />";
-            }
-            return $tableInfo;
+            return "table"." ".$tableName." found";
         }catch(PDOException $e){
             return "no such table exist!";
         }
