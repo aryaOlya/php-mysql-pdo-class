@@ -26,8 +26,16 @@ class usePdo{
     public function insertToTable($tableName,$columns,$values){
         $statement = $this->conn->prepare("insert into"." ".$tableName." "."(".$this->arrayToString($columns).")"." "."values"."(".$this->setBindValues($values).")");
         $statement->execute($values);
+        return $this;
     }
 
+    //update columns of table
+    public function updateTable($tableName,$columns,$values,$uniqueKey,$uniqueValue){
+        $statement = $this->conn->prepare("update ".$tableName." set ".$this->bindParamValueForUpdate($columns)." where ".$uniqueKey."=?");
+        $values[] = $uniqueValue;
+        $statement->execute($values);
+        return $this;
+    }
 
     //check the table existence
     public function __invoke($tableName)
@@ -39,6 +47,15 @@ class usePdo{
         }catch(PDOException $e){
             return "no such table exist!";
         }
+    }
+
+    //make bind params & value for updating column
+    private function bindParamValueForUpdate($columns){
+        $bindParamValue ="";
+        for($i=0;$i<count($columns);$i++){
+            $bindParamValue = $columns[$i]."="."?".$bindParamValue;
+        }
+        return $bindParamValue;
     }
 
 
@@ -58,24 +75,30 @@ class usePdo{
     //execute when dynamic method not found
     public function __call(string $name, array $arguments)
     {
-        echo 'dynamic method '.$name.' not found!' ;
+        echo 'dynamic method '."<b>".$name."</b>".' not found!' ;
     }
 
     //execute when static method not found
     public static function __callStatic(string $name, array $arguments)
     {
-        echo 'static method '.$name.' not found!' ;
+        echo 'static method '."<b>".$name."</b>".' not found!' ;
+    }
+
+    //execute when property not found
+    public function __get(string $name)
+    {
+        echo "property "."<b>".$name."</b>"." not found!";
     }
 
     //execute when instance got printed
     public function __toString(): string
     {
-        return 'try to connect to the '.$this->dbName.' database!';
+        return 'try to connect to the '.'<b>'.$this->dbName.'</b>'.' database!';
     }
 }
 
 $myPdo = new UsePdo('localhost','root','','testone');
-echo $myPdo('user');
+//echo $myPdo('user');
 //$myPdo->insertToTable('user',['name'],['ahmad']);
-
+//$myPdo->updateTable('user',['name'],['ajdar'],'id',1);
 
