@@ -1,11 +1,11 @@
 <?php
 
 class usePdo{
-    public $server;
-    public $username;
-    public $password;
-    public $dbName;
-    public $conn;
+    protected $server;
+    protected $username;
+    protected $password;
+    protected $dbName;
+    protected $conn;
 
     public function __construct($server,$username,$password,$dbName=null)
     {
